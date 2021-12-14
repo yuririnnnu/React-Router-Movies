@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import { Switch, Route, Link } from 'react-router-dom';
+
+import Movie from './Movies/Movie';
+import MovieList from './Movies/MovieList';
 import SavedList from './Movies/SavedList';
 
 export default function App () {
@@ -10,10 +14,12 @@ export default function App () {
   useEffect(() => {
     const getMovies = () => {
       axios
-        .get('http://localhost:5000/api/movies') // Study this endpoint with Postman
-        .then(response => {
+        .get('http://localhost:5001/api/movies') // Study this endpoint with Postman
+        .then(res => {
           // Study this response with a breakpoint or log statements
+          console.log(`This is the response: `, res)
           // and set the response data as the 'movieList' slice of state
+          setMovieList(res.data);
         })
         .catch(error => {
           console.error('Server Error', error);
@@ -30,7 +36,22 @@ export default function App () {
     <div>
       <SavedList list={[ /* This is stretch */]} />
 
-      <div>Replace this Div with your Routes</div>
+      <div>
+      <nav>
+        <Link to='/'>Home</Link>
+        <Link to='/movie'>Movie</Link>
+        <Link to='/movieList'>Movie List</Link>
+      </nav>
+
+      <Switch>
+        <Route path="/movie/:movieID">
+          <Movie movies={movieList} />
+        </Route>
+        <Route path="/">
+          <MovieList movies={movieList} />
+        </Route>
+      </Switch>
+      </div>
     </div>
   );
 }
